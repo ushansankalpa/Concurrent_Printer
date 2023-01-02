@@ -1,5 +1,6 @@
 package com.company;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -11,8 +12,7 @@ public class LaserPrinter implements ServicePrinter {
     private ThreadGroup studentThreadGroup;
 
     ReentrantLock lock = new ReentrantLock(true);
-    Condition available = lock.newCondition();
-    Condition notAvailable = lock.newCondition();
+    Condition condition = lock.newCondition();
 
     public LaserPrinter(String printerID, int currentPaperLevel, int currentTonerLevel, int numOfDocPrinted, ThreadGroup studentThreadGroup) {
         this.printerID = printerID;
@@ -23,7 +23,8 @@ public class LaserPrinter implements ServicePrinter {
     }
 
     @Override
-    public synchronized void printDocument(Document document) {
+    public  void printDocument(Document document) {
+        lock.lock();
         String userId = document.getUserID();
         String docName = document.getDocumentName();
         int pageLength = document.getNumberOfPages();
@@ -40,12 +41,15 @@ public class LaserPrinter implements ServicePrinter {
             }
 
             try {
-                wait();
+                condition.await();
+                //wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
         }
+
+        lock.unlock();
 
         System.out.println("\n[Student : " + userId + "| Document : " + docName + "| Pages :" + pageLength + "] >> Starting print document with " + pageLength + " pages <<");
 
@@ -59,13 +63,14 @@ public class LaserPrinter implements ServicePrinter {
 
 
     @Override
-    public synchronized void replaceTonerCartridge() {
-
+    public void replaceTonerCartridge() {
+        lock.lock();
         while (currentTonerLevel >= Minimum_Toner_Level) {
             System.out.println("\nChecking current toner level .... [ It is not necessary to replace the toner at this time.]  Current Toner Level :" + currentTonerLevel);
 
             try {
-                wait(5000);
+                condition.await(5000, TimeUnit.MILLISECONDS);
+                //wait(5000);
                 if (studentThreadGroup.activeCount() < 1) {
                     return;
                 }
@@ -77,16 +82,20 @@ public class LaserPrinter implements ServicePrinter {
         System.out.println("\nChecking current toner level .... *** Toner level low *** [ Start replacing toner cartridge ...]  Current Toner Level :" + currentTonerLevel);
         currentTonerLevel += PagesPerTonerCartridge;
         System.out.println("<<< [ Successfully replaced toner cartridge ...] >>> Current Toner Level :" + currentTonerLevel);
-        notifyAll();
+        //notifyAll();
+        condition.signalAll();
+        lock.unlock();
     }
 
     @Override
-    public synchronized void refillPaper() {
+    public void refillPaper() {
+        lock.lock();
         while ((this.currentPaperLevel + SheetsPerPack) > Full_Paper_Tray) {
             System.out.println("\nChecking current paper level .... [ It is not necessary to replace the paper at this time.]  Current Paper Level :" + currentPaperLevel);
 
             try {
-                wait(5000);
+                condition.await(5000, TimeUnit.MILLISECONDS);
+                //wait(5000);
                 if (studentThreadGroup.activeCount() < 1) {
                     return;
                 }
@@ -97,7 +106,9 @@ public class LaserPrinter implements ServicePrinter {
         System.out.println("\nChecking current paper level .... *** Paper level low *** [ Start replacing Paper pack ...]  Current Paper Level :" + currentPaperLevel);
         currentPaperLevel += SheetsPerPack;
         System.out.println("<<< [ Successfully replaced Paper pack ...] >>> Current Paper Level :" + currentPaperLevel);
-        notifyAll();
+        //notifyAll();
+        condition.signalAll();
+        lock.unlock();
     }
 
     @Override
