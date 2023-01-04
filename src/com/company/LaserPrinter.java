@@ -40,17 +40,8 @@ public class LaserPrinter implements ServicePrinter {
                 } else {
                     System.out.println("\n[Student : " + userId + "| Document : " + docName + "| Pages :" + pageLength + "] *** Unavailable Toner level *** [ Toner Level :" + currentTonerLevel + " ]");
                 }
-
                 condition.await();
-//                try {
-//
-//                    //wait();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-
             }
-
 
             System.out.println("\n[Student : " + userId + "| Document : " + docName + "| Pages :" + pageLength + "] >> Starting print document with " + pageLength + " pages <<");
 
@@ -67,9 +58,6 @@ public class LaserPrinter implements ServicePrinter {
         finally {
             lock.unlock();
         }
-
-
-
     }
 
 
@@ -85,17 +73,6 @@ public class LaserPrinter implements ServicePrinter {
                 }else {
                     condition.await(5000, TimeUnit.MILLISECONDS);
                 }
-//                try {
-//                    condition.await(5000, TimeUnit.MILLISECONDS);
-//                    //wait(5000);
-//                    if (studentThreadGroup.activeCount() < 1) {
-//                        return;
-//                    }
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-
-
             }
 
             System.out.println("\nChecking current toner level .... *** Toner level low *** [ Start replacing toner cartridge ...]  Current Toner Level :" + currentTonerLevel);
@@ -118,16 +95,6 @@ public class LaserPrinter implements ServicePrinter {
         try {
             while ((this.currentPaperLevel + SheetsPerPack) > Full_Paper_Tray) {
                 System.out.println("\nChecking current paper level .... [ It is not necessary to replace the paper at this time.]  Current Paper Level :" + currentPaperLevel);
-
-//                try {
-//                    condition.await(5000, TimeUnit.MILLISECONDS);
-//                    //wait(5000);
-//                    if (studentThreadGroup.activeCount() < 1) {
-//                        return;
-//                    }
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
                 if (hasPrinterFinishedUsed()){
                     break;
                 }else {
