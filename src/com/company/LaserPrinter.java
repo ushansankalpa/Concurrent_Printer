@@ -78,7 +78,6 @@ public class LaserPrinter implements ServicePrinter {
             System.out.println("\nChecking current toner level .... *** Toner level low *** [ Start replacing toner cartridge ...]  Current Toner Level :" + currentTonerLevel);
             currentTonerLevel += PagesPerTonerCartridge;
             System.out.println("<<< [ Successfully replaced toner cartridge ...] >>> Current Toner Level :" + currentTonerLevel);
-            //notifyAll();
             condition.signalAll();
         }catch (InterruptedException e){
             e.printStackTrace();
@@ -104,7 +103,6 @@ public class LaserPrinter implements ServicePrinter {
             System.out.println("\nChecking current paper level .... *** Paper level low *** [ Start replacing Paper pack ...]  Current Paper Level :" + currentPaperLevel);
             currentPaperLevel += SheetsPerPack;
             System.out.println("<<< [ Successfully replaced Paper pack ...] >>> Current Paper Level :" + currentPaperLevel);
-            //notifyAll();
             condition.signalAll();
 
         }catch (InterruptedException e){
