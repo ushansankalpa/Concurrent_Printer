@@ -14,7 +14,7 @@ public class Student extends Thread{
     public void run(){
         int numOfDocument = 5;
 
-        for (int i = 0; i < numOfDocument; i++) {
+        for (int i = 1; i <= numOfDocument; i++) {
             String docName = "Doc"+ (i+1);
 
             Random ranNum = new Random();
@@ -24,12 +24,17 @@ public class Student extends Thread{
             Document document = new Document(this.getName(),docName,docLength);
             printer.printDocument(document);
 
-            try {
-                int sleepTime = 1000 + ranNum.nextInt(5000 - 1000);
-                sleep(sleepTime);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            boolean endLoop = i == numOfDocument ;
+            if (!endLoop){
+
+                try {
+                    int sleepTime = 1000 + ranNum.nextInt(5000 - 1000);
+                    sleep(sleepTime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+
         }
 
         System.out.println("\n\t <<<<<<<  "+this.getName()+ " finished the document printing >>>>>>");

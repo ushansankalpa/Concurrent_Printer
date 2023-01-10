@@ -5,7 +5,7 @@ public class PrintingSystem {
         ThreadGroup studentThreadGroup = new ThreadGroup("Student");
         ThreadGroup techThreadGroup = new ThreadGroup("Technician");
 
-        ServicePrinter printer = new LaserPrinter("DELL",20,50,0,studentThreadGroup);
+        ServicePrinter printer = new LaserPrinter("DELL",50,20,0,studentThreadGroup);
 
         Thread student1 = new Student(studentThreadGroup,printer,"Student 1");
         Thread student2 = new Student(studentThreadGroup,printer,"Student 2");

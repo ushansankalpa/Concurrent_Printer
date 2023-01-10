@@ -65,7 +65,7 @@ public class LaserPrinter implements ServicePrinter {
     public void replaceTonerCartridge() {
         lock.lock();
         try {
-            while (currentTonerLevel >= Minimum_Toner_Level) {
+            while (currentTonerLevel > Minimum_Toner_Level) {
                 System.out.println("\nChecking current toner level .... [ It is not necessary to replace the toner at this time.]  Current Toner Level :" + currentTonerLevel);
 
                 if (hasPrinterFinishedUsed()){
@@ -75,9 +75,13 @@ public class LaserPrinter implements ServicePrinter {
                 }
             }
 
-            System.out.println("\nChecking current toner level .... *** Toner level low *** [ Start replacing toner cartridge ...]  Current Toner Level :" + currentTonerLevel);
-            currentTonerLevel += PagesPerTonerCartridge;
-            System.out.println("<<< [ Successfully replaced toner cartridge ...] >>> Current Toner Level :" + currentTonerLevel);
+            if (currentTonerLevel < Minimum_Toner_Level){
+                System.out.println("\nChecking current toner level .... *** Toner level low *** [ Start replacing toner cartridge ...]  Current Toner Level :" + currentTonerLevel);
+                currentTonerLevel = Full_Toner_Level;
+                System.out.println("<<< [ Successfully replaced toner cartridge ...] >>> Current Toner Level :" + currentTonerLevel);
+            }
+
+
             condition.signalAll();
         }catch (InterruptedException e){
             e.printStackTrace();
@@ -100,9 +104,13 @@ public class LaserPrinter implements ServicePrinter {
                     condition.await(5000, TimeUnit.MILLISECONDS);
                 }
             }
-            System.out.println("\nChecking current paper level .... *** Paper level low *** [ Start replacing Paper pack ...]  Current Paper Level :" + currentPaperLevel);
-            currentPaperLevel += SheetsPerPack;
-            System.out.println("<<< [ Successfully replaced Paper pack ...] >>> Current Paper Level :" + currentPaperLevel);
+
+            if (currentPaperLevel + SheetsPerPack <= Full_Paper_Tray) {
+                System.out.println("\nChecking current paper level .... *** Paper level low *** [ Start replacing Paper pack ...]  Current Paper Level :" + currentPaperLevel);
+                currentPaperLevel += SheetsPerPack;
+                System.out.println("<<< [ Successfully replaced Paper pack ...] >>> Current Paper Level :" + currentPaperLevel);
+            }
+
             condition.signalAll();
 
         }catch (InterruptedException e){
