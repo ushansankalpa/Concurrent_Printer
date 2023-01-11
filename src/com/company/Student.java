@@ -15,7 +15,7 @@ public class Student extends Thread{
         int numOfDocument = 5;
 
         for (int i = 1; i <= numOfDocument; i++) {
-            String docName = "Doc"+ (i+1);
+            String docName = "Doc"+ (i);
 
             Random ranNum = new Random();
 

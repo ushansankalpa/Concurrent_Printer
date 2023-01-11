@@ -1,7 +1,7 @@
 package com.company;
 
 public class PrintingSystem {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         ThreadGroup studentThreadGroup = new ThreadGroup("Student");
         ThreadGroup techThreadGroup = new ThreadGroup("Technician");
 
@@ -24,13 +24,18 @@ public class PrintingSystem {
         tonerTech.start();
 
 
-        student1.join();
-        student2.join();
-        student3.join();
-        student4.join();
+        try {
+            student1.join();
+            student2.join();
+            student3.join();
+            student4.join();
 
-        paperTech.join();
-        tonerTech.join();
+            paperTech.join();
+            tonerTech.join();
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+
 
         System.out.println("\n ******* All document printing are successfully finished *******");
 

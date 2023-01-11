@@ -81,7 +81,6 @@ public class LaserPrinter implements ServicePrinter {
                 System.out.println("<<< [ Successfully replaced toner cartridge ...] >>> Current Toner Level :" + currentTonerLevel);
             }
 
-
             condition.signalAll();
         }catch (InterruptedException e){
             e.printStackTrace();
